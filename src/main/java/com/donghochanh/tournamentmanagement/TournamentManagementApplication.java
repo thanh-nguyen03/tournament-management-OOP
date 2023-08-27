@@ -18,7 +18,7 @@ public class TournamentManagementApplication extends JFrame {
 		setSize(1200, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new FlowLayout());
+		setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 	}
 
 	public static void main(String[] args) {
