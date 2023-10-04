@@ -1,5 +1,6 @@
 package com.donghochanh.tournamentmanagement;
 
+import com.donghochanh.tournamentmanagement.swing.pages.player.PlayerPanel;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,8 +9,10 @@ import java.awt.*;
 
 @SpringBootApplication
 public class TournamentManagementApplication extends JFrame {
+	private final PlayerPanel playerPanel;
 
-	public TournamentManagementApplication() {
+	public TournamentManagementApplication(PlayerPanel playerPanel) {
+		this.playerPanel = playerPanel;
 		initUI();
 	}
 
@@ -18,7 +21,11 @@ public class TournamentManagementApplication extends JFrame {
 		setSize(1200, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.setPreferredSize(this.getSize());
+		tabbedPane.addTab("Player", this.playerPanel);
+		tabbedPane.addTab("Tournament", new JPanel());
+		add(tabbedPane);
 	}
 
 	public static void main(String[] args) {
