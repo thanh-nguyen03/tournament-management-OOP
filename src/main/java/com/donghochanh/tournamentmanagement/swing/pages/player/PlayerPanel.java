@@ -5,6 +5,7 @@ import com.donghochanh.tournamentmanagement.mapper.TableMapping;
 import com.donghochanh.tournamentmanagement.service.PlayerService;
 import com.donghochanh.tournamentmanagement.swing.components.Table;
 import com.donghochanh.tournamentmanagement.swing.constants.TableColumnDefs;
+import com.donghochanh.tournamentmanagement.swing.constants.TableConstant;
 import com.donghochanh.tournamentmanagement.swing.pages.player.components.PlayerForm;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class PlayerPanel extends JPanel implements ActionListener, ListSelection
 		);
 		this.tableView = new JScrollPane(playerTable);
 		tableView.setBorder(BorderFactory.createTitledBorder("Player List"));
-		tableView.setPreferredSize(new Dimension(1150, 500));
+		tableView.setPreferredSize(new Dimension(TableConstant.TABLE_WIDTH, TableConstant.TABLE_HEIGHT));
 		playerForm.getCreateButton().addActionListener(this);
 		playerForm.getEditButton().addActionListener(this);
 		playerForm.getCancelButton().addActionListener(this);

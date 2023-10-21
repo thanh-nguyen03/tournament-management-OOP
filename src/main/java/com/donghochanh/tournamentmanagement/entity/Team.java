@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = Player.TABLE_NAME)
-public class Player {
-	protected static final String TABLE_NAME = "player";
+@Table(name = Team.TABLE_NAME)
+public class Team {
+	protected static final String TABLE_NAME = "team";
 
 	@Id
 	@GeneratedValue
@@ -21,8 +23,11 @@ public class Player {
 	private String name;
 
 	@Column(nullable = false)
-	private Integer age;
+	private String stadium;
 
 	@Column(nullable = false)
-	private String nationality;
+	private String country;
+
+	@ManyToMany(mappedBy = "teams")
+	private List<Tournament> tournaments;
 }

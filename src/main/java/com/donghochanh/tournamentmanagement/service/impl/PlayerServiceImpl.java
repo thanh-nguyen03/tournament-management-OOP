@@ -4,17 +4,15 @@ import com.donghochanh.tournamentmanagement.dto.PlayerDto;
 import com.donghochanh.tournamentmanagement.entity.Player;
 import com.donghochanh.tournamentmanagement.repository.PlayerRepository;
 import com.donghochanh.tournamentmanagement.service.PlayerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 	private final PlayerRepository playerRepository;
-
-	public PlayerServiceImpl(PlayerRepository playerRepository) {
-		this.playerRepository = playerRepository;
-	}
 
 	@Override
 	public List<Player> findAllPlayers() {
