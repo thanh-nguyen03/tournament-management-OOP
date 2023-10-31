@@ -113,10 +113,13 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			handleUpdateTournament();
 		} else if (e.getSource() == tournamentForm.getCancelButton()) {
 			tournamentForm.resetInput();
+			tournamentForm.getAddTeamButton().setEnabled(true);
+			tournamentForm.getRemoveTeamButton().setEnabled(true);
 			tournamentForm.setEditState(false, false);
 			currentEditState = false;
 			tournamentTable.clearSelection();
 			allTeamTable.clearSelection();
+			teamTable.clearSelection();
 			teamTable.updateTableData(
 				TableMapping.teamToTable(new ArrayList<>()),
 				TableColumnDefs.TEAM_TABLE_COLUMN_DEFS
@@ -173,10 +176,8 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentForm.setEditState(true, true);
 			tournamentForm.getRemoveTeamButton().setEnabled(false);
 			currentEditState = true;
-			return;
-		}
-
-		if (!tournamentTable.getSelectionModel().isSelectionEmpty() && !teamTable.getSelectionModel().isSelectionEmpty()) {
+		} else if (!tournamentTable.getSelectionModel().isSelectionEmpty() && !teamTable.getSelectionModel().isSelectionEmpty()) {
+			System.out.println(teamTable.getSelectionModel().isSelectionEmpty());
 			// Both tables are selected.
 			tournamentForm.setEditState(true, true);
 			tournamentForm.getAddTeamButton().setEnabled(false);
@@ -193,9 +194,10 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		allTeamTableView.setViewportView(allTeamTable);
 		tournamentForm.resetInput();
 		tournamentTable.clearSelection();
+		teamTable.clearSelection();
+		allTeamTable.clearSelection();
 		tournamentForm.setEditState(false, false);
 		currentEditState = false;
-		allTeamTable.clearSelection();
 	}
 
 	private void handleCreateTournament() {

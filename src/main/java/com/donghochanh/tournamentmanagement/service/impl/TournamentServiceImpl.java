@@ -1,11 +1,15 @@
 package com.donghochanh.tournamentmanagement.service.impl;
 
+import com.donghochanh.tournamentmanagement.constants.TournamentStatus;
 import com.donghochanh.tournamentmanagement.dto.TournamentDto;
 import com.donghochanh.tournamentmanagement.entity.Team;
 import com.donghochanh.tournamentmanagement.entity.Tournament;
+import com.donghochanh.tournamentmanagement.entity.TournamentTeamResult;
+import com.donghochanh.tournamentmanagement.exceptions.NotFoundException;
 import com.donghochanh.tournamentmanagement.exceptions.TeamAlreadyAddedException;
 import com.donghochanh.tournamentmanagement.repository.TeamRepository;
 import com.donghochanh.tournamentmanagement.repository.TournamentRepository;
+import com.donghochanh.tournamentmanagement.repository.TournamentTeamResultRepository;
 import com.donghochanh.tournamentmanagement.service.TeamService;
 import com.donghochanh.tournamentmanagement.service.TournamentService;
 import jakarta.transaction.Transactional;
@@ -22,6 +26,7 @@ import java.util.List;
 public class TournamentServiceImpl implements TournamentService {
 	private final TournamentRepository tournamentRepository;
 	private final TeamRepository teamRepository;
+	private final TournamentTeamResultRepository tournamentTeamResultRepository;
 	private final TeamService teamService;
 
 	@Override
@@ -42,6 +47,8 @@ public class TournamentServiceImpl implements TournamentService {
 		tournament.setPrize(Integer.valueOf(tournamentDto.prize().trim()));
 		tournament.setStartDate(formatter.parse(tournamentDto.startDate(), LocalDate::from));
 		tournament.setEndDate(formatter.parse(tournamentDto.endDate(), LocalDate::from));
+		tournament.setStatus(TournamentStatus.NOT_STARTED);
+
 
 		this.tournamentRepository.save(tournament);
 	}
@@ -62,6 +69,17 @@ public class TournamentServiceImpl implements TournamentService {
 		tournament.setEndDate(formatter.parse(tournamentDto.endDate(), LocalDate::from));
 
 		this.tournamentRepository.save(tournament);
+	}
+
+	@Override
+	public void updateTournamentStatus(Long id, String status) {
+		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
+
+		if (tournament == null) {
+			throw new NotFoundException("Tournament not found");
+		}
+
+		tournament.setStatus(TournamentStatus.valueOf(status));
 	}
 
 	@Override
@@ -109,5 +127,16 @@ public class TournamentServiceImpl implements TournamentService {
 
 		tournament.getTeams().remove(team);
 		this.tournamentRepository.save(tournament);
+	}
+
+	@Override
+	public List<TournamentTeamResult> getTournamentRanking(Long id) {
+		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
+
+		if (tournament == null) {
+			throw new NotFoundException("Tournament not found");
+		}
+
+		return this.tournamentTeamResultRepository.findAllByTournamentIdOrderByPointsDescGoalsForDescGoalsAgainstDesc(id);
 	}
 }

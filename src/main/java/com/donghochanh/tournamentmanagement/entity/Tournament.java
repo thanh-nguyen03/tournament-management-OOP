@@ -1,5 +1,6 @@
 package com.donghochanh.tournamentmanagement.entity;
 
+import com.donghochanh.tournamentmanagement.constants.TournamentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,9 @@ public class Tournament {
 	@Column(nullable = false)
 	private LocalDate endDate;
 
+	@Column(nullable = false)
+	private TournamentStatus status;
+
 	@ManyToMany
 	@JoinTable(
 		name = "tournament_team",
@@ -40,4 +44,7 @@ public class Tournament {
 		uniqueConstraints = @UniqueConstraint(columnNames = {"tournament_id", "team_id"})
 	)
 	private List<Team> teams;
+
+	@OneToMany(mappedBy = "tournament")
+	private List<Match> matches;
 }
