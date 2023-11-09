@@ -1,7 +1,6 @@
 package com.donghochanh.tournamentmanagement.swing.pages.tournaments.components;
 
 import com.donghochanh.tournamentmanagement.swing.components.Button;
-import com.donghochanh.tournamentmanagement.swing.components.DatePicker;
 import com.donghochanh.tournamentmanagement.swing.components.TextField;
 import com.donghochanh.tournamentmanagement.swing.constants.ColorVariant;
 import lombok.Getter;
@@ -14,8 +13,6 @@ import java.awt.*;
 public class TournamentForm extends JPanel {
 	private TextField name;
 	private TextField prize;
-	private DatePicker startDate;
-	private DatePicker endDate;
 
 	@Getter
 	private Button createButton;
@@ -39,10 +36,8 @@ public class TournamentForm extends JPanel {
 	private void initUI() {
 		setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		setBorder(BorderFactory.createTitledBorder("Tournament Form"));
-		this.name = new TextField("Name");
-		this.prize = new TextField("Prize");
-		this.startDate = new DatePicker("Start Date (dd/MM/yyyy)", 333, 30, 14);
-		this.endDate = new DatePicker("End Date (dd/MM/yyyy)", 333, 30, 14);
+		this.name = new TextField("Name", 400, 30, 14);
+		this.prize = new TextField("Prize", 200, 30, 14);
 		this.createButton = new Button("Create Tournament", ColorVariant.PRIMARY);
 		this.editButton = new Button("Save", ColorVariant.PRIMARY);
 		this.deleteButton = new Button("Delete Tournament", ColorVariant.ERROR);
@@ -50,7 +45,12 @@ public class TournamentForm extends JPanel {
 		this.cancelButton = new Button("Cancel", ColorVariant.WARNING);
 		this.addTeamButton = new Button("Add Team", ColorVariant.PRIMARY);
 		this.removeTeamButton = new Button("Remove Team", ColorVariant.ERROR);
-		setPreferredSize(new Dimension(1150, 120));
+		setPreferredSize(new Dimension(1150, 140));
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		buttonPanel.setPreferredSize(new Dimension(1100, 60));
+
 		editButton.setEnabled(false);
 		deleteButton.setEnabled(false);
 		startButton.setEnabled(false);
@@ -59,15 +59,14 @@ public class TournamentForm extends JPanel {
 		removeTeamButton.setVisible(false);
 		add(name);
 		add(prize);
-		add(startDate);
-		add(endDate);
-		add(createButton);
-		add(editButton);
-		add(deleteButton);
-		add(startButton);
-		add(addTeamButton);
-		add(removeTeamButton);
-		add(cancelButton);
+		buttonPanel.add(createButton);
+		buttonPanel.add(editButton);
+		buttonPanel.add(deleteButton);
+		buttonPanel.add(startButton);
+		buttonPanel.add(addTeamButton);
+		buttonPanel.add(removeTeamButton);
+		buttonPanel.add(cancelButton);
+		add(buttonPanel);
 	}
 
 	public String getInputName() {
@@ -78,26 +77,14 @@ public class TournamentForm extends JPanel {
 		return prize.getText();
 	}
 
-	public String getInputStartDate() {
-		return startDate.getText();
-	}
-
-	public String getInputEndDate() {
-		return endDate.getText();
-	}
-
-	public void setForm(String name, String prize, String startDate, String endDate) {
+	public void setForm(String name, String prize) {
 		this.name.setText(name);
 		this.prize.setText(prize);
-		this.startDate.setText(startDate);
-		this.endDate.setText(endDate);
 	}
 
 	public void resetInput() {
 		name.setText("");
 		prize.setText("");
-		startDate.setText("");
-		endDate.setText("");
 	}
 
 
@@ -120,6 +107,6 @@ public class TournamentForm extends JPanel {
 	}
 
 	public Boolean validateInput() {
-		return !name.getText().isEmpty() && !prize.getText().isEmpty() && !startDate.getText().isEmpty() && !endDate.getText().isEmpty();
+		return !name.getText().isEmpty() && !prize.getText().isEmpty();
 	}
 }

@@ -35,15 +35,14 @@ public class TableMapping {
 	}
 
 	public static Object[][] tournamentToTable(List<Tournament> tournaments) {
-		Object[][] table = new Object[tournaments.size()][6];
+		Object[][] table = new Object[tournaments.size()][5];
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		for (int i = 0; i < tournaments.size(); i++) {
 			table[i][0] = i + 1;
 			table[i][1] = tournaments.get(i).getId();
 			table[i][2] = tournaments.get(i).getName();
 			table[i][3] = tournaments.get(i).getPrize();
-			table[i][4] = formatter.format(tournaments.get(i).getStartDate());
-			table[i][5] = formatter.format(tournaments.get(i).getEndDate());
+			table[i][4] = String.valueOf(tournaments.get(i).getStatus());
 		}
 		return table;
 	}
