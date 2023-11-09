@@ -59,6 +59,7 @@ public class Main extends JPanel implements ActionListener {
 		if (e.getSource() == menu.getBtnTeam()) {
 			cardLayout.show(mainPanel, "Teams");
 		} else if (e.getSource() == menu.getBtnTournament()) {
+			this.tournamentPanel.rerenderPanel();
 			cardLayout.show(mainPanel, "Tournaments");
 		} else if (e.getSource() == menu.getBtnTournamentDetail()) {
 			cardLayout.show(mainPanel, "Matches");

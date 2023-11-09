@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -26,12 +25,6 @@ public class Tournament {
 
 	@Column(nullable = false)
 	private Integer prize;
-
-	@Column(nullable = false)
-	private LocalDate startDate;
-
-	@Column(nullable = false)
-	private LocalDate endDate;
 
 	@Column(nullable = false)
 	private TournamentStatus status;

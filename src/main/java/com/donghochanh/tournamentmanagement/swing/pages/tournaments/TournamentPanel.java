@@ -1,7 +1,6 @@
 package com.donghochanh.tournamentmanagement.swing.pages.tournaments;
 
 import com.donghochanh.tournamentmanagement.dto.TournamentDto;
-import com.donghochanh.tournamentmanagement.exceptions.TeamAlreadyAddedException;
 import com.donghochanh.tournamentmanagement.mapper.TableMapping;
 import com.donghochanh.tournamentmanagement.service.TeamService;
 import com.donghochanh.tournamentmanagement.service.TournamentService;
@@ -121,15 +120,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		} else if (e.getSource() == tournamentForm.getEditButton() && currentEditState) {
 			handleUpdateTournament();
 		} else if (e.getSource() == tournamentForm.getCancelButton()) {
-			tournamentForm.resetInput();
-			tournamentForm.getAddTeamButton().setEnabled(true);
-			tournamentForm.getRemoveTeamButton().setEnabled(true);
-			tournamentForm.setEditState(false, false);
-			currentEditState = false;
-			tournamentTable.clearSelection();
-			allTeamTable.clearSelection();
-			teamTable.clearSelection();
-			resetTournamentTeamTable();
+			this.resetAll();
 		} else if (e.getSource() == tournamentForm.getDeleteButton()) {
 			handleDeleteTournament();
 		} else if (e.getSource() == tournamentForm.getStartButton()) {
@@ -147,16 +138,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			);
 		}
 
-		// Reset after action
-		tournamentForm.resetInput();
-		tournamentForm.getAddTeamButton().setEnabled(true);
-		tournamentForm.getRemoveTeamButton().setEnabled(true);
-		tournamentForm.setEditState(false, false);
-		currentEditState = false;
-		tournamentTable.clearSelection();
-		allTeamTable.clearSelection();
-		teamTable.clearSelection();
-		resetTournamentTeamTable();
+		this.resetAll();
 	}
 
 
@@ -167,9 +149,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			if (row >= 0) {
 				tournamentForm.setForm(
 					tournamentTable.getValueAt(row, 2).toString(),
-					tournamentTable.getValueAt(row, 3).toString(),
-					tournamentTable.getValueAt(row, 4).toString(),
-					tournamentTable.getValueAt(row, 5).toString()
+					tournamentTable.getValueAt(row, 3).toString()
 				);
 				this.teamTable.updateTableData(
 					TableMapping.teamToTable(teamService.getTeamsByTournamentId(
@@ -203,13 +183,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			TableMapping.teamToTable(teamService.getAllTeams()),
 			TableColumnDefs.TEAM_TABLE_COLUMN_DEFS
 		);
-		allTeamTableView.setViewportView(allTeamTable);
-		tournamentForm.resetInput();
-		tournamentTable.clearSelection();
-		teamTable.clearSelection();
-		allTeamTable.clearSelection();
-		tournamentForm.setEditState(false, false);
-		currentEditState = false;
+		this.resetAll();
 	}
 
 	private void handleCreateTournament() {
@@ -220,9 +194,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentService.createTournament(
 				new TournamentDto(
 					tournamentForm.getInputName(),
-					tournamentForm.getInputPrize(),
-					tournamentForm.getInputStartDate(),
-					tournamentForm.getInputEndDate()
+					tournamentForm.getInputPrize()
 				));
 			updateTournamentTable();
 			tournamentForm.resetInput();
@@ -233,6 +205,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				JOptionPane.INFORMATION_MESSAGE
 			);
 		} catch (Exception exception) {
+			exception.printStackTrace();
 			JOptionPane.showMessageDialog(
 				null,
 				"Invalid input data. Please try again",
@@ -255,9 +228,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				Long.parseLong(tournamentTable.getValueAt(row, 1).toString()),
 				new TournamentDto(
 					tournamentForm.getInputName(),
-					tournamentForm.getInputPrize(),
-					tournamentForm.getInputStartDate(),
-					tournamentForm.getInputEndDate()
+					tournamentForm.getInputPrize()
 				)
 			);
 			updateTournamentTable();
@@ -306,6 +277,13 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 					"Team deleted successfully",
 					"Success",
 					JOptionPane.INFORMATION_MESSAGE
+				);
+			} catch (RuntimeException exception) {
+				JOptionPane.showMessageDialog(
+					null,
+					exception.getMessage(),
+					"Error",
+					JOptionPane.ERROR_MESSAGE
 				);
 			} catch (Exception exception) {
 				JOptionPane.showMessageDialog(
@@ -392,7 +370,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				"Success",
 				JOptionPane.INFORMATION_MESSAGE
 			);
-		} catch (TeamAlreadyAddedException exception) {
+		} catch (RuntimeException exception) {
 			JOptionPane.showMessageDialog(
 				null,
 				exception.getMessage(),
@@ -437,6 +415,13 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				"Success",
 				JOptionPane.INFORMATION_MESSAGE
 			);
+		} catch (RuntimeException exception) {
+			JOptionPane.showMessageDialog(
+				null,
+				exception.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		} catch (Exception exception) {
 			JOptionPane.showMessageDialog(
 				null,
@@ -445,5 +430,17 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				JOptionPane.ERROR_MESSAGE
 			);
 		}
+	}
+
+	private void resetAll() {
+		tournamentForm.resetInput();
+		tournamentForm.getAddTeamButton().setEnabled(true);
+		tournamentForm.getRemoveTeamButton().setEnabled(true);
+		tournamentForm.setEditState(false, false);
+		currentEditState = false;
+		tournamentTable.clearSelection();
+		allTeamTable.clearSelection();
+		teamTable.clearSelection();
+		resetTournamentTeamTable();
 	}
 }

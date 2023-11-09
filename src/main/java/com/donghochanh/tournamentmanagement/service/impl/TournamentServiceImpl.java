@@ -20,7 +20,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,8 +51,6 @@ public class TournamentServiceImpl implements TournamentService {
 		Tournament tournament = new Tournament();
 		tournament.setName(tournamentDto.name());
 		tournament.setPrize(Integer.valueOf(tournamentDto.prize().trim()));
-		tournament.setStartDate(formatter.parse(tournamentDto.startDate(), LocalDate::from));
-		tournament.setEndDate(formatter.parse(tournamentDto.endDate(), LocalDate::from));
 		tournament.setStatus(TournamentStatus.NOT_STARTED);
 
 
@@ -68,12 +65,16 @@ public class TournamentServiceImpl implements TournamentService {
 			return;
 		}
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		if (tournament.getStatus().equals(TournamentStatus.STARTED)) {
+			throw new RuntimeException("Tournament already started");
+		}
+
+		if (tournament.getStatus().equals(TournamentStatus.FINISHED)) {
+			throw new RuntimeException("Tournament already finished");
+		}
 
 		tournament.setName(tournamentDto.name());
 		tournament.setPrize(Integer.valueOf(tournamentDto.prize().trim()));
-		tournament.setStartDate(formatter.parse(tournamentDto.startDate(), LocalDate::from));
-		tournament.setEndDate(formatter.parse(tournamentDto.endDate(), LocalDate::from));
 
 		this.tournamentRepository.save(tournament);
 	}
@@ -151,6 +152,16 @@ public class TournamentServiceImpl implements TournamentService {
 
 	@Override
 	public void deleteTournament(Long id) {
+		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
+
+		if (tournament == null) {
+			throw new NotFoundException("Tournament not found");
+		}
+
+		if (!tournament.getStatus().equals(TournamentStatus.NOT_STARTED)) {
+			throw new RuntimeException("Tournament already started or finished cannot be deleted");
+		}
+
 		this.tournamentRepository.deleteById(id);
 	}
 
@@ -160,6 +171,14 @@ public class TournamentServiceImpl implements TournamentService {
 
 		if (tournament == null) {
 			return;
+		}
+
+		if (tournament.getStatus() == TournamentStatus.STARTED) {
+			throw new RuntimeException("Tournament already started");
+		}
+
+		if (tournament.getStatus() == TournamentStatus.FINISHED) {
+			throw new RuntimeException("Tournament already finished");
 		}
 
 		Team existingTeam = this.teamRepository.findByIdAndTournamentsId(teamId, id);
@@ -184,6 +203,14 @@ public class TournamentServiceImpl implements TournamentService {
 
 		if (tournament == null) {
 			return;
+		}
+
+		if (tournament.getStatus() == TournamentStatus.STARTED) {
+			throw new RuntimeException("Tournament already started");
+		}
+
+		if (tournament.getStatus() == TournamentStatus.FINISHED) {
+			throw new RuntimeException("Tournament already finished");
 		}
 
 		Team team = this.teamService.getTeamById(playerId);
