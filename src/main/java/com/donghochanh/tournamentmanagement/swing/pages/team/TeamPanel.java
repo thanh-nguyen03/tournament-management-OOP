@@ -38,7 +38,7 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 		);
 		this.tableView = new JScrollPane(teamTable);
 		tableView.setBorder(BorderFactory.createTitledBorder("Team List"));
-		tableView.setPreferredSize(new Dimension(TableConstant.TABLE_WIDTH, TableConstant.TABLE_HEIGHT));
+		tableView.setPreferredSize(new Dimension(TableConstant.TABLE_WIDTH, TableConstant.TABLE_HEIGHT + 50));
 		teamForm.getCreateButton().addActionListener(this);
 		teamForm.getEditButton().addActionListener(this);
 		teamForm.getCancelButton().addActionListener(this);

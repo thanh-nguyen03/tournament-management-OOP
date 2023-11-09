@@ -30,4 +30,13 @@ public class Team {
 
 	@ManyToMany(mappedBy = "teams")
 	private List<Tournament> tournaments;
+
+	@OneToMany(mappedBy = "team1")
+	private List<Match> home;
+
+	@OneToMany(mappedBy = "team2")
+	private List<Match> away;
+
+	@OneToMany(mappedBy = "team")
+	private List<TournamentTeamResult> tournamentTeamResults;
 }

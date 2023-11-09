@@ -4,6 +4,7 @@ import com.donghochanh.tournamentmanagement.swing.components.Button;
 import com.donghochanh.tournamentmanagement.swing.components.DatePicker;
 import com.donghochanh.tournamentmanagement.swing.components.TextField;
 import com.donghochanh.tournamentmanagement.swing.constants.ColorVariant;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -16,11 +17,19 @@ public class TournamentForm extends JPanel {
 	private DatePicker startDate;
 	private DatePicker endDate;
 
+	@Getter
 	private Button createButton;
+	@Getter
 	private Button editButton;
+	@Getter
 	private Button deleteButton;
+	@Getter
+	private Button startButton;
+	@Getter
 	private Button cancelButton;
+	@Getter
 	private Button addTeamButton;
+	@Getter
 	private Button removeTeamButton;
 
 	public TournamentForm() {
@@ -37,12 +46,14 @@ public class TournamentForm extends JPanel {
 		this.createButton = new Button("Create Tournament", ColorVariant.PRIMARY);
 		this.editButton = new Button("Save", ColorVariant.PRIMARY);
 		this.deleteButton = new Button("Delete Tournament", ColorVariant.ERROR);
+		this.startButton = new Button("Start Tournament", ColorVariant.SECONDARY);
 		this.cancelButton = new Button("Cancel", ColorVariant.WARNING);
 		this.addTeamButton = new Button("Add Team", ColorVariant.PRIMARY);
 		this.removeTeamButton = new Button("Remove Team", ColorVariant.ERROR);
 		setPreferredSize(new Dimension(1150, 120));
 		editButton.setEnabled(false);
 		deleteButton.setEnabled(false);
+		startButton.setEnabled(false);
 		cancelButton.setVisible(false);
 		addTeamButton.setVisible(false);
 		removeTeamButton.setVisible(false);
@@ -53,6 +64,7 @@ public class TournamentForm extends JPanel {
 		add(createButton);
 		add(editButton);
 		add(deleteButton);
+		add(startButton);
 		add(addTeamButton);
 		add(removeTeamButton);
 		add(cancelButton);
@@ -74,30 +86,6 @@ public class TournamentForm extends JPanel {
 		return endDate.getText();
 	}
 
-	public Button getCreateButton() {
-		return createButton;
-	}
-
-	public Button getEditButton() {
-		return editButton;
-	}
-
-	public Button getDeleteButton() {
-		return deleteButton;
-	}
-
-	public Button getCancelButton() {
-		return cancelButton;
-	}
-
-	public Button getAddTeamButton() {
-		return addTeamButton;
-	}
-
-	public Button getRemoveTeamButton() {
-		return removeTeamButton;
-	}
-
 	public void setForm(String name, String prize, String startDate, String endDate) {
 		this.name.setText(name);
 		this.prize.setText(prize);
@@ -117,6 +105,7 @@ public class TournamentForm extends JPanel {
 		createButton.setEnabled(!editState);
 		editButton.setEnabled(editState);
 		deleteButton.setEnabled(editState);
+		startButton.setEnabled(editState);
 		cancelButton.setVisible(editState);
 	}
 
@@ -124,6 +113,7 @@ public class TournamentForm extends JPanel {
 		createButton.setEnabled(!editState);
 		editButton.setEnabled(editState && !modifyTeamState);
 		deleteButton.setEnabled(editState && !modifyTeamState);
+		startButton.setEnabled(editState && !modifyTeamState);
 		cancelButton.setVisible(editState);
 		addTeamButton.setVisible(editState && modifyTeamState);
 		removeTeamButton.setVisible(editState && modifyTeamState);

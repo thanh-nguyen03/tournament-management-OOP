@@ -14,6 +14,10 @@ public interface TournamentService {
 
 	void updateTournament(Long id, TournamentDto tournamentDto);
 
+	void startTournament(Long id);
+
+	void endTournament(Long id);
+
 	void deleteTournament(Long id);
 
 	void addTeam(Long id, Long playerId);
