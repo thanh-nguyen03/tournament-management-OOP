@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface TournamentTeamResultRepository extends JpaRepository<TournamentTeamResult, Long> {
 	List<TournamentTeamResult> findAllByTournamentIdOrderByPointsDescGoalsForDescGoalsAgainstDesc(Long tournamentId);
 
-	Optional<TournamentTeamResult> findByTeamId(Long teamId);
+	Optional<TournamentTeamResult> findByTeamIdAndTournamentId(Long teamId, Long tournamentId);
 }

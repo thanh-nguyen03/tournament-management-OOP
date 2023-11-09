@@ -21,6 +21,18 @@ public class TournamentTeamResult {
 	private Integer points;
 
 	@Column(nullable = false)
+	private Integer matchesPlayed;
+
+	@Column(nullable = false)
+	private Integer wins;
+
+	@Column(nullable = false)
+	private Integer draws;
+
+	@Column(nullable = false)
+	private Integer losses;
+
+	@Column(nullable = false)
 	private Integer goalsFor;
 
 	@Column(nullable = false)
@@ -30,7 +42,7 @@ public class TournamentTeamResult {
 	@JoinColumn(name = "tournament_id", nullable = false)
 	private Tournament tournament;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 }

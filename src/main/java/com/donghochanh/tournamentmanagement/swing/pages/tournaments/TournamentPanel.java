@@ -73,6 +73,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		tournamentForm.getEditButton().addActionListener(this);
 		tournamentForm.getCancelButton().addActionListener(this);
 		tournamentForm.getDeleteButton().addActionListener(this);
+		tournamentForm.getStartButton().addActionListener(this);
 		tournamentForm.getAddTeamButton().addActionListener(this);
 		tournamentForm.getRemoveTeamButton().addActionListener(this);
 
@@ -88,6 +89,14 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			TableColumnDefs.TOURNAMENT_TABLE_COLUMN_DEFS
 		);
 		tournamentTableView.setViewportView(tournamentTable);
+	}
+
+	private void resetTournamentTeamTable() {
+		teamTable.updateTableData(
+			TableMapping.teamToTable(new ArrayList<>()),
+			TableColumnDefs.TEAM_TABLE_COLUMN_DEFS
+		);
+		teamTableView.setViewportView(teamTable);
 	}
 
 	private void updateTeamTable(Long id) {
@@ -120,12 +129,11 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentTable.clearSelection();
 			allTeamTable.clearSelection();
 			teamTable.clearSelection();
-			teamTable.updateTableData(
-				TableMapping.teamToTable(new ArrayList<>()),
-				TableColumnDefs.TEAM_TABLE_COLUMN_DEFS
-			);
+			resetTournamentTeamTable();
 		} else if (e.getSource() == tournamentForm.getDeleteButton()) {
 			handleDeleteTournament();
+		} else if (e.getSource() == tournamentForm.getStartButton()) {
+			handleStartTournament();
 		} else if (e.getSource() == tournamentForm.getAddTeamButton()) {
 			handleAddTeamToTournament();
 		} else if (e.getSource() == tournamentForm.getRemoveTeamButton()) {
@@ -140,11 +148,15 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		}
 
 		// Reset after action
-		allTeamTable.clearSelection();
-		teamTable.clearSelection();
-		tournamentTable.clearSelection();
+		tournamentForm.resetInput();
+		tournamentForm.getAddTeamButton().setEnabled(true);
+		tournamentForm.getRemoveTeamButton().setEnabled(true);
 		tournamentForm.setEditState(false, false);
 		currentEditState = false;
+		tournamentTable.clearSelection();
+		allTeamTable.clearSelection();
+		teamTable.clearSelection();
+		resetTournamentTeamTable();
 	}
 
 
@@ -304,6 +316,52 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				);
 			}
 		}
+	}
+
+	private void handleStartTournament() {
+		int tournament = tournamentTable.getSelectedRow();
+		if (tournament < 0) {
+			return;
+		}
+
+		int dialogResult = JOptionPane.showConfirmDialog(
+			null,
+			"Are you sure you want to start this tournament?",
+			"Warning",
+			JOptionPane.YES_NO_OPTION
+		);
+
+		if (dialogResult != JOptionPane.YES_OPTION) {
+			return;
+		}
+
+		try {
+			this.tournamentService.startTournament(
+				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString())
+			);
+			JOptionPane.showMessageDialog(
+				null,
+				"Tournament started successfully",
+				"Success",
+				JOptionPane.INFORMATION_MESSAGE
+			);
+		} catch (RuntimeException exception) {
+			exception.printStackTrace();
+			JOptionPane.showMessageDialog(
+				null,
+				exception.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
+		} catch (Exception exception) {
+			JOptionPane.showMessageDialog(
+				null,
+				"Error starting tournament",
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
+		updateTournamentTable();
 	}
 
 	private void handleAddTeamToTournament() {

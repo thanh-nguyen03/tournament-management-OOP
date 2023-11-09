@@ -45,6 +45,6 @@ public class Tournament {
 	)
 	private List<Team> teams;
 
-	@OneToMany(mappedBy = "tournament")
+	@OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
 	private List<Match> matches;
 }

@@ -1,6 +1,7 @@
 package com.donghochanh.tournamentmanagement.entity;
 
 import com.donghochanh.tournamentmanagement.constants.MatchResult;
+import com.donghochanh.tournamentmanagement.constants.MatchStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,9 @@ public class Match {
 
 	@Column(nullable = false)
 	private MatchResult matchResult;
+
+	@Column(nullable = false)
+	private MatchStatus matchStatus;
 
 	@Column(nullable = false)
 	private String stadium;

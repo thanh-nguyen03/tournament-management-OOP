@@ -36,4 +36,7 @@ public class Team {
 
 	@OneToMany(mappedBy = "team2")
 	private List<Match> away;
+
+	@OneToMany(mappedBy = "team")
+	private List<TournamentTeamResult> tournamentTeamResults;
 }
