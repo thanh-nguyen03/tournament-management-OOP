@@ -205,7 +205,6 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				JOptionPane.INFORMATION_MESSAGE
 			);
 		} catch (Exception exception) {
-			exception.printStackTrace();
 			JOptionPane.showMessageDialog(
 				null,
 				"Invalid input data. Please try again",
@@ -324,7 +323,6 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				JOptionPane.INFORMATION_MESSAGE
 			);
 		} catch (RuntimeException exception) {
-			exception.printStackTrace();
 			JOptionPane.showMessageDialog(
 				null,
 				exception.getMessage(),
