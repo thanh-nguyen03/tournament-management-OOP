@@ -20,7 +20,7 @@ public interface TournamentService {
 
 	void deleteTournament(Long id);
 
-	void addTeam(Long id, Long playerId);
+	void addTeam(Long id, Long teamId);
 
-	void removeTeam(Long id, Long playerId);
+	void removeTeam(Long id, Long teamId);
 }
