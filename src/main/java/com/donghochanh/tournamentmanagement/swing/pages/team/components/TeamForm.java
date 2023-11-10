@@ -21,7 +21,7 @@ public class TeamForm extends JPanel {
 
 	public TeamForm() {
 		setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-		setBorder(BorderFactory.createTitledBorder("Player Form"));
+		setBorder(BorderFactory.createTitledBorder("Team Form"));
 		setPreferredSize(new Dimension(1200, 80));
 		this.name = new TextField("Name");
 		this.stadium = new TextField("Stadium");

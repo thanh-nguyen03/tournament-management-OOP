@@ -198,7 +198,7 @@ public class TournamentServiceImpl implements TournamentService {
 	}
 
 	@Override
-	public void removeTeam(Long id, Long playerId) {
+	public void removeTeam(Long id, Long teamId) {
 		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
 
 		if (tournament == null) {
@@ -213,7 +213,7 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new RuntimeException("Tournament already finished");
 		}
 
-		Team team = this.teamService.getTeamById(playerId);
+		Team team = this.teamService.getTeamById(teamId);
 
 		if (team == null) {
 			return;
