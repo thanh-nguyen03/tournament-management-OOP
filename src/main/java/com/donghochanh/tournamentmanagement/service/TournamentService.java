@@ -22,5 +22,7 @@ public interface TournamentService {
 
 	void addTeam(Long id, Long teamId);
 
+	void addMultipleTeams(Long id, List<Long> teamIds);
+
 	void removeTeam(Long id, Long teamId);
 }
