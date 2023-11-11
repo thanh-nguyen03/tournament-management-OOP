@@ -45,7 +45,7 @@ public class Main extends JPanel implements ActionListener {
 		mainPanel.add("Tournaments", this.tournamentPanel);
 		mainPanel.add("Matches", this.matchesPanel);
 		add(mainPanel);
-		cardLayout.show(mainPanel, "Matches");
+		cardLayout.show(mainPanel, "Home");
 
 		// Add event listener
 		this.menu.getBtnTeam().addActionListener(this);

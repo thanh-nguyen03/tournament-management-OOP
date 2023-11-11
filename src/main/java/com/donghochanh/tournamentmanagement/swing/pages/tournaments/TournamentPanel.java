@@ -59,7 +59,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		this.allTeamTableView = new JScrollPane(allTeamTable);
 
 		tournamentTableView.setBorder(BorderFactory.createTitledBorder("Tournament List"));
-		teamTableView.setBorder(BorderFactory.createTitledBorder("Tournament Team List"));
+		teamTableView.setBorder(BorderFactory.createTitledBorder("Current Tournament Team List"));
 		allTeamTableView.setBorder(BorderFactory.createTitledBorder("All Team List"));
 		tournamentTableView.setPreferredSize(new Dimension((TableConstant.TABLE_WIDTH - 10) / 2, TableConstant.TABLE_HEIGHT - 250));
 		teamTableView.setPreferredSize(new Dimension((TableConstant.TABLE_WIDTH - 10) / 2, TableConstant.TABLE_HEIGHT - 250));
