@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TournamentPanel extends JPanel implements ActionListener, ListSelectionListener {
@@ -64,6 +65,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		tournamentTableView.setPreferredSize(new Dimension((TableConstant.TABLE_WIDTH - 10) / 2, TableConstant.TABLE_HEIGHT - 250));
 		teamTableView.setPreferredSize(new Dimension((TableConstant.TABLE_WIDTH - 10) / 2, TableConstant.TABLE_HEIGHT - 250));
 		allTeamTableView.setPreferredSize(new Dimension(TableConstant.TABLE_WIDTH, TableConstant.TABLE_HEIGHT / 2));
+		allTeamTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		tournamentTable.getSelectionModel().addListSelectionListener(this);
 		allTeamTable.getSelectionModel().addListSelectionListener(this);
@@ -169,7 +171,6 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentForm.getRemoveTeamButton().setEnabled(false);
 			currentEditState = true;
 		} else if (!tournamentTable.getSelectionModel().isSelectionEmpty() && !teamTable.getSelectionModel().isSelectionEmpty()) {
-			System.out.println(teamTable.getSelectionModel().isSelectionEmpty());
 			// Both tables are selected.
 			tournamentForm.setEditState(true, true);
 			tournamentForm.getAddTeamButton().setEnabled(false);
@@ -346,15 +347,20 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			return;
 		}
 
-		int team = allTeamTable.getSelectedRow();
-		if (team < 0) {
+		int[] teams = allTeamTable.getSelectedRows();
+		if (teams.length == 0) {
 			return;
 		}
 
+		List<Long> teamIds = new ArrayList<>();
+		for (int team : teams) {
+			teamIds.add(Long.parseLong(allTeamTable.getValueAt(team, 1).toString()));
+		}
+
 		try {
-			tournamentService.addTeam(
+			tournamentService.addMultipleTeams(
 				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString()),
-				Long.parseLong(allTeamTable.getValueAt(team, 1).toString())
+				teamIds
 			);
 			updateTournamentTable();
 			updateTeamTable(

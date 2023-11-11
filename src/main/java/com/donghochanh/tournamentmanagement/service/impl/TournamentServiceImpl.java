@@ -20,7 +20,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,12 +46,10 @@ public class TournamentServiceImpl implements TournamentService {
 
 	@Override
 	public void createTournament(TournamentDto tournamentDto) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		Tournament tournament = new Tournament();
 		tournament.setName(tournamentDto.name());
 		tournament.setPrize(Integer.valueOf(tournamentDto.prize().trim()));
 		tournament.setStatus(TournamentStatus.NOT_STARTED);
-
 
 		this.tournamentRepository.save(tournament);
 	}
@@ -194,6 +191,44 @@ public class TournamentServiceImpl implements TournamentService {
 		}
 
 		tournament.getTeams().add(team);
+		this.tournamentRepository.save(tournament);
+	}
+
+	@Override
+	public void addMultipleTeams(Long id, List<Long> teamIds) {
+		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
+
+		if (tournament == null) {
+			return;
+		}
+
+		if (tournament.getStatus() == TournamentStatus.STARTED) {
+			throw new RuntimeException("Tournament already started");
+		}
+
+		if (tournament.getStatus() == TournamentStatus.FINISHED) {
+			throw new RuntimeException("Tournament already finished");
+		}
+
+		List<Team> teams = this.teamRepository.findAllById(teamIds);
+
+		if (teams == null) {
+			return;
+		}
+
+		for (Team team : teams) {
+			if (team == null) {
+				continue;
+			}
+			Team existingTeam = this.teamRepository.findByIdAndTournamentsId(team.getId(), id);
+
+			if (existingTeam != null) {
+				throw new TeamAlreadyAddedException("Team already added to tournament");
+			}
+
+			tournament.getTeams().add(team);
+		}
+
 		this.tournamentRepository.save(tournament);
 	}
 
