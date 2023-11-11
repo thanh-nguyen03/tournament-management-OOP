@@ -241,6 +241,13 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				"Success",
 				JOptionPane.INFORMATION_MESSAGE
 			);
+		} catch (RuntimeException exception) {
+			JOptionPane.showMessageDialog(
+				null,
+				exception.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		} catch (Exception exception) {
 			JOptionPane.showMessageDialog(
 				null,
@@ -399,6 +406,17 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 
 		int team = teamTable.getSelectedRow();
 		if (team < 0) {
+			return;
+		}
+
+		int dialogResult = JOptionPane.showConfirmDialog(
+			null,
+			"Are you sure you want to remove this team?",
+			"Warning",
+			JOptionPane.YES_NO_OPTION
+		);
+
+		if (dialogResult != JOptionPane.YES_OPTION) {
 			return;
 		}
 
