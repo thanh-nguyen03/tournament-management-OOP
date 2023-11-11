@@ -2,6 +2,8 @@ package com.donghochanh.tournamentmanagement.service.impl;
 
 import com.donghochanh.tournamentmanagement.dto.TeamDto;
 import com.donghochanh.tournamentmanagement.entity.Team;
+import com.donghochanh.tournamentmanagement.exceptions.NotFoundException;
+import com.donghochanh.tournamentmanagement.repository.MatchRepository;
 import com.donghochanh.tournamentmanagement.repository.TeamRepository;
 import com.donghochanh.tournamentmanagement.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 	private final TeamRepository teamRepository;
+	private final MatchRepository matchRepository;
 
 	@Override
 	public List<Team> getAllTeams() {
@@ -51,6 +54,17 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public void deleteTeam(Long id) {
+		Team team = this.teamRepository.findById(id).orElse(null);
+
+		if (team == null) {
+			throw new NotFoundException("Team not found");
+		}
+
+		// Do not delete team if it has matches
+		if (this.matchRepository.countByTeam1_IdOrTeam2_Id(id, id) > 0) {
+			throw new RuntimeException("Cannot delete team in tournament that is started");
+		}
+
 		this.teamRepository.deleteById(id);
 	}
 

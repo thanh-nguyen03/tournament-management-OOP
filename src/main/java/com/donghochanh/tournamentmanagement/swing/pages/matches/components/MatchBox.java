@@ -38,9 +38,9 @@ public class MatchBox extends JPanel implements ActionListener {
 		this.team2Label = new Label(match.getTeam2().getName(), 16);
 		this.scoreLabel = new Label(match.getTeam1Score() + " - " + match.getTeam2Score(), 16);
 		if (match.getMatchStatus().equals(MatchStatus.FINISHED)) {
-			this.updateScoreButton = new Button("Match finished", ColorVariant.WARNING, 120, 26, 14);
+			this.updateScoreButton = new Button("Match finished", ColorVariant.WARNING, 130, 26, 14);
 		} else {
-			this.updateScoreButton = new Button("Update score", ColorVariant.PRIMARY, 120, 26, 14);
+			this.updateScoreButton = new Button("Update score", ColorVariant.PRIMARY, 130, 26, 14);
 		}
 		this.matchResultDialog = new MatchResultDialog();
 
@@ -85,6 +85,9 @@ public class MatchBox extends JPanel implements ActionListener {
 			this.scoreLabel.setText(
 				updatedMatch.getTeam1Score() + " - " + updatedMatch.getTeam2Score()
 			);
+
+			this.matchResultDialog.setTeam1ScoreField(updatedMatch.getTeam1Score());
+			this.matchResultDialog.setTeam2ScoreField(updatedMatch.getTeam2Score());
 
 			if (updatedMatch.getMatchStatus().equals(MatchStatus.FINISHED)) {
 				this.updateScoreButton.setEnabled(false);

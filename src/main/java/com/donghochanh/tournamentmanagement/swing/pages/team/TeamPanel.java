@@ -137,20 +137,37 @@ public class TeamPanel extends JPanel implements ActionListener, ListSelectionLi
 				JOptionPane.YES_NO_OPTION
 			);
 			if (dialogResult == JOptionPane.YES_OPTION) {
-				teamService.deleteTeam(
-					Long.parseLong(teamTable.getValueAt(row, 1).toString())
-				);
-				updateTable();
-				teamForm.resetInput();
-				teamForm.setState(currentEditState);
-				teamTable.clearSelection();
-				currentEditState = false;
-				JOptionPane.showMessageDialog(
-					null,
-					"Team deleted successfully",
-					"Success",
-					JOptionPane.INFORMATION_MESSAGE
-				);
+
+				try {
+					teamService.deleteTeam(
+						Long.parseLong(teamTable.getValueAt(row, 1).toString())
+					);
+					updateTable();
+					teamForm.resetInput();
+					teamForm.setState(currentEditState);
+					teamTable.clearSelection();
+					currentEditState = false;
+					JOptionPane.showMessageDialog(
+						null,
+						"Team deleted successfully",
+						"Success",
+						JOptionPane.INFORMATION_MESSAGE
+					);
+				} catch (RuntimeException exception) {
+					JOptionPane.showMessageDialog(
+						null,
+						"Cannot delete team in tournament that is started",
+						"Error",
+						JOptionPane.ERROR_MESSAGE
+					);
+				} catch (Exception exception) {
+					JOptionPane.showMessageDialog(
+						null,
+						"Error while deleting team",
+						"Error",
+						JOptionPane.ERROR_MESSAGE
+					);
+				}
 			}
 		} else {
 			JOptionPane.showMessageDialog(
