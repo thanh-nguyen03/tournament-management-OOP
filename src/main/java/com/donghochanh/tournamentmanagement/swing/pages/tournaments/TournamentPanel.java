@@ -1,6 +1,8 @@
 package com.donghochanh.tournamentmanagement.swing.pages.tournaments;
 
 import com.donghochanh.tournamentmanagement.dto.TournamentDto;
+import com.donghochanh.tournamentmanagement.entity.Team;
+import com.donghochanh.tournamentmanagement.entity.Tournament;
 import com.donghochanh.tournamentmanagement.mapper.TableMapping;
 import com.donghochanh.tournamentmanagement.service.TeamService;
 import com.donghochanh.tournamentmanagement.service.TournamentService;
@@ -43,8 +45,17 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 
 	private void initUI() {
 		setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		List<Tournament> tournaments = tournamentService.getAllTournaments();
+		List<Team> champions = new ArrayList<>();
+		for (Tournament tournament : tournaments) {
+			try {
+				champions.add(tournamentService.getChampionOfTournament(tournament.getId()));
+			} catch (RuntimeException exception) {
+				champions.add(null);
+			}
+		}
 		this.tournamentTable = new Table(
-			TableMapping.tournamentToTable(tournamentService.getAllTournaments()),
+			TableMapping.tournamentToTable(tournaments, champions),
 			TableColumnDefs.TOURNAMENT_TABLE_COLUMN_DEFS
 		);
 		this.allTeamTable = new Table(
@@ -66,15 +77,18 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		teamTableView.setPreferredSize(new Dimension((TableConstant.TABLE_WIDTH - 10) / 2, TableConstant.TABLE_HEIGHT - 250));
 		allTeamTableView.setPreferredSize(new Dimension(TableConstant.TABLE_WIDTH, TableConstant.TABLE_HEIGHT / 2));
 		allTeamTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		teamTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		tournamentTable.getSelectionModel().addListSelectionListener(this);
 		allTeamTable.getSelectionModel().addListSelectionListener(this);
 		teamTable.getSelectionModel().addListSelectionListener(this);
+
 		tournamentForm.getCreateButton().addActionListener(this);
 		tournamentForm.getEditButton().addActionListener(this);
 		tournamentForm.getCancelButton().addActionListener(this);
 		tournamentForm.getDeleteButton().addActionListener(this);
 		tournamentForm.getStartButton().addActionListener(this);
+		tournamentForm.getEndButton().addActionListener(this);
 		tournamentForm.getAddTeamButton().addActionListener(this);
 		tournamentForm.getRemoveTeamButton().addActionListener(this);
 
@@ -85,11 +99,20 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 	}
 
 	private void updateTournamentTable() {
-		tournamentTable.updateTableData(
-			TableMapping.tournamentToTable(tournamentService.getAllTournaments()),
+		List<Tournament> tournaments = tournamentService.getAllTournaments();
+		List<Team> champions = new ArrayList<>();
+		for (Tournament tournament : tournaments) {
+			try {
+				champions.add(tournamentService.getChampionOfTournament(tournament.getId()));
+			} catch (RuntimeException exception) {
+				champions.add(null);
+			}
+		}
+		this.tournamentTable.updateTableData(
+			TableMapping.tournamentToTable(tournaments, champions),
 			TableColumnDefs.TOURNAMENT_TABLE_COLUMN_DEFS
 		);
-		tournamentTableView.setViewportView(tournamentTable);
+		tournamentTableView.setViewportView(this.tournamentTable);
 	}
 
 	private void resetTournamentTeamTable() {
@@ -127,17 +150,12 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			handleDeleteTournament();
 		} else if (e.getSource() == tournamentForm.getStartButton()) {
 			handleStartTournament();
+		} else if (e.getSource() == tournamentForm.getEndButton()) {
+			handleEndTournament();
 		} else if (e.getSource() == tournamentForm.getAddTeamButton()) {
 			handleAddTeamToTournament();
 		} else if (e.getSource() == tournamentForm.getRemoveTeamButton()) {
 			handleRemoveTeamFromTournament();
-		} else {
-			JOptionPane.showMessageDialog(
-				null,
-				"Please select a team to edit",
-				"Error",
-				JOptionPane.ERROR_MESSAGE
-			);
 		}
 
 		this.resetAll();
@@ -146,7 +164,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if (e.getSource() == tournamentTable.getSelectionModel() && !e.getValueIsAdjusting()) {
+		if (e.getSource() == tournamentTable.getSelectionModel()) {
 			int row = tournamentTable.getSelectedRow();
 			if (row >= 0) {
 				tournamentForm.setForm(
@@ -348,6 +366,57 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		updateTournamentTable();
 	}
 
+	private void handleEndTournament() {
+		int tournament = tournamentTable.getSelectedRow();
+		if (tournament < 0) {
+			return;
+		}
+
+		int dialogResult = JOptionPane.showConfirmDialog(
+			null,
+			"Are you sure you want to end this tournament?",
+			"Warning",
+			JOptionPane.YES_NO_OPTION
+		);
+
+		if (dialogResult != JOptionPane.YES_OPTION) {
+			return;
+		}
+
+		try {
+			Tournament tournamentEntity = this.tournamentService.getTournamentById(
+				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString())
+			);
+			this.tournamentService.endTournament(
+				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString())
+			);
+			Team champion = this.tournamentService.getChampionOfTournament(
+				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString())
+			);
+			JOptionPane.showMessageDialog(
+				null,
+				"Tournament ended successfully!\nChampion of the league is " + champion.getName() + " with total prize of " + tournamentEntity.getPrize(),
+				"Success",
+				JOptionPane.INFORMATION_MESSAGE
+			);
+		} catch (RuntimeException exception) {
+			JOptionPane.showMessageDialog(
+				null,
+				exception.getMessage(),
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
+		} catch (Exception exception) {
+			JOptionPane.showMessageDialog(
+				null,
+				"Error ending tournament",
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
+		updateTournamentTable();
+	}
+
 	private void handleAddTeamToTournament() {
 		int tournament = tournamentTable.getSelectedRow();
 		if (tournament < 0) {
@@ -404,33 +473,27 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			return;
 		}
 
-		int team = teamTable.getSelectedRow();
-		if (team < 0) {
+		int[] teams = teamTable.getSelectedRows();
+		if (teams.length == 0) {
 			return;
 		}
 
-		int dialogResult = JOptionPane.showConfirmDialog(
-			null,
-			"Are you sure you want to remove this team?",
-			"Warning",
-			JOptionPane.YES_NO_OPTION
-		);
-
-		if (dialogResult != JOptionPane.YES_OPTION) {
-			return;
+		List<Long> teamIds = new ArrayList<>();
+		for (int team : teams) {
+			teamIds.add(Long.parseLong(teamTable.getValueAt(team, 1).toString()));
 		}
 
 		try {
-			tournamentService.removeTeam(
+			tournamentService.removeMultipleTeams(
 				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString()),
-				Long.parseLong(teamTable.getValueAt(team, 1).toString())
+				teamIds
 			);
 			updateTournamentTable();
 			updateTeamTable(
 				Long.parseLong(tournamentTable.getValueAt(tournament, 1).toString())
 			);
 			tournamentForm.resetInput();
-			allTeamTable.clearSelection();
+			teamTable.clearSelection();
 			JOptionPane.showMessageDialog(
 				null,
 				"Team removed successfully",

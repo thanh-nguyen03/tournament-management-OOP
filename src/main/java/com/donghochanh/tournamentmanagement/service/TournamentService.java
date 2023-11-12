@@ -1,6 +1,7 @@
 package com.donghochanh.tournamentmanagement.service;
 
 import com.donghochanh.tournamentmanagement.dto.TournamentDto;
+import com.donghochanh.tournamentmanagement.entity.Team;
 import com.donghochanh.tournamentmanagement.entity.Tournament;
 
 import java.util.List;
@@ -20,9 +21,13 @@ public interface TournamentService {
 
 	void deleteTournament(Long id);
 
+	Team getChampionOfTournament(Long tournamentId);
+
 	void addTeam(Long id, Long teamId);
 
 	void addMultipleTeams(Long id, List<Long> teamIds);
+
+	void removeMultipleTeams(Long id, List<Long> teamIds);
 
 	void removeTeam(Long id, Long teamId);
 }
