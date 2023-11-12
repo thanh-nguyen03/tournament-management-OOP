@@ -23,6 +23,8 @@ public class TournamentForm extends JPanel {
 	@Getter
 	private Button startButton;
 	@Getter
+	private Button endButton;
+	@Getter
 	private Button cancelButton;
 	@Getter
 	private Button addTeamButton;
@@ -42,6 +44,7 @@ public class TournamentForm extends JPanel {
 		this.editButton = new Button("Save", ColorVariant.PRIMARY);
 		this.deleteButton = new Button("Delete Tournament", ColorVariant.ERROR);
 		this.startButton = new Button("Start Tournament", ColorVariant.SECONDARY);
+		this.endButton = new Button("End Tournament", ColorVariant.SUCCESS);
 		this.cancelButton = new Button("Cancel", ColorVariant.WARNING);
 		this.addTeamButton = new Button("Add Team", ColorVariant.PRIMARY);
 		this.removeTeamButton = new Button("Remove Team", ColorVariant.ERROR);
@@ -54,6 +57,7 @@ public class TournamentForm extends JPanel {
 		editButton.setEnabled(false);
 		deleteButton.setEnabled(false);
 		startButton.setEnabled(false);
+		endButton.setEnabled(false);
 		cancelButton.setVisible(false);
 		addTeamButton.setVisible(false);
 		removeTeamButton.setVisible(false);
@@ -63,6 +67,7 @@ public class TournamentForm extends JPanel {
 		buttonPanel.add(editButton);
 		buttonPanel.add(deleteButton);
 		buttonPanel.add(startButton);
+		buttonPanel.add(endButton);
 		buttonPanel.add(addTeamButton);
 		buttonPanel.add(removeTeamButton);
 		buttonPanel.add(cancelButton);
@@ -93,6 +98,7 @@ public class TournamentForm extends JPanel {
 		editButton.setEnabled(editState);
 		deleteButton.setEnabled(editState);
 		startButton.setEnabled(editState);
+		endButton.setEnabled(editState);
 		cancelButton.setVisible(editState);
 	}
 
@@ -101,6 +107,7 @@ public class TournamentForm extends JPanel {
 		editButton.setEnabled(editState && !modifyTeamState);
 		deleteButton.setEnabled(editState && !modifyTeamState);
 		startButton.setEnabled(editState && !modifyTeamState);
+		endButton.setEnabled(editState && !modifyTeamState);
 		cancelButton.setVisible(editState);
 		addTeamButton.setVisible(editState && modifyTeamState);
 		removeTeamButton.setVisible(editState && modifyTeamState);

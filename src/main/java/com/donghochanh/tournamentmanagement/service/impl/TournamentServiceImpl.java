@@ -143,6 +143,15 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new RuntimeException("Tournament already finished");
 		}
 
+		List<Match> matches = tournament.getMatches();
+
+		// if all matches are not finished, throw exception
+		for (Match match : matches) {
+			if (match.getMatchStatus() != MatchStatus.FINISHED) {
+				throw new RuntimeException("All matches must be finished before ending tournament");
+			}
+		}
+
 		tournament.setStatus(TournamentStatus.FINISHED);
 		this.tournamentRepository.save(tournament);
 	}
@@ -160,6 +169,27 @@ public class TournamentServiceImpl implements TournamentService {
 		}
 
 		this.tournamentRepository.deleteById(id);
+	}
+
+	@Override
+	public Team getChampionOfTournament(Long tournamentId) {
+		Tournament tournament = this.tournamentRepository.findById(tournamentId).orElse(null);
+
+		if (tournament == null) {
+			throw new NotFoundException("Tournament not found");
+		}
+
+		if (!tournament.getStatus().equals(TournamentStatus.FINISHED)) {
+			throw new RuntimeException("Tournament not finished yet");
+		}
+
+		List<TournamentTeamResult> tournamentTeamResults = this.tournamentTeamResultRepository.findAllByTournamentIdOrderByPointsDescGoalsForDescGoalsAgainstDesc(tournamentId);
+
+		if (tournamentTeamResults.isEmpty()) {
+			throw new RuntimeException("Tournament has no team");
+		}
+
+		return tournamentTeamResults.get(0).getTeam();
 	}
 
 	@Override
@@ -227,6 +257,38 @@ public class TournamentServiceImpl implements TournamentService {
 			}
 
 			tournament.getTeams().add(team);
+		}
+
+		this.tournamentRepository.save(tournament);
+	}
+
+	@Override
+	public void removeMultipleTeams(Long id, List<Long> teamIds) {
+		Tournament tournament = this.tournamentRepository.findById(id).orElse(null);
+
+		if (tournament == null) {
+			return;
+		}
+
+		if (tournament.getStatus() == TournamentStatus.STARTED) {
+			throw new RuntimeException("Tournament already started");
+		}
+
+		if (tournament.getStatus() == TournamentStatus.FINISHED) {
+			throw new RuntimeException("Tournament already finished");
+		}
+
+		List<Team> teams = this.teamRepository.findAllById(teamIds);
+
+		if (teams == null) {
+			return;
+		}
+
+		for (Team team : teams) {
+			if (team == null) {
+				continue;
+			}
+			tournament.getTeams().remove(team);
 		}
 
 		this.tournamentRepository.save(tournament);
