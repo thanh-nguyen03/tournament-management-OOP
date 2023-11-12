@@ -219,7 +219,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentForm.resetInput();
 			JOptionPane.showMessageDialog(
 				null,
-				"Team created successfully",
+				"Tournament created successfully",
 				"Success",
 				JOptionPane.INFORMATION_MESSAGE
 			);
@@ -255,7 +255,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			tournamentForm.resetInput();
 			JOptionPane.showMessageDialog(
 				null,
-				"Team updated successfully",
+				"Tournament updated successfully",
 				"Success",
 				JOptionPane.INFORMATION_MESSAGE
 			);
@@ -283,7 +283,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 		}
 		int dialogResult = JOptionPane.showConfirmDialog(
 			null,
-			"Are you sure you want to delete this team?",
+			"Are you sure you want to delete this tournament?",
 			"Warning",
 			JOptionPane.YES_NO_OPTION
 		);
@@ -299,7 +299,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 				currentEditState = false;
 				JOptionPane.showMessageDialog(
 					null,
-					"Team deleted successfully",
+					"Tournament deleted successfully",
 					"Success",
 					JOptionPane.INFORMATION_MESSAGE
 				);
@@ -313,7 +313,7 @@ public class TournamentPanel extends JPanel implements ActionListener, ListSelec
 			} catch (Exception exception) {
 				JOptionPane.showMessageDialog(
 					null,
-					"Error deleting team",
+					"Error deleting tournament",
 					"Error",
 					JOptionPane.ERROR_MESSAGE
 				);
